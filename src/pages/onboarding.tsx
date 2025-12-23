@@ -15,6 +15,7 @@ export default function Onboarding() {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+  const [progress, setProgress] = useState(0);
   const [formData, setFormData] = useState<FormData>({
     companyName: '',
     fullName: '',
@@ -32,6 +33,21 @@ export default function Onboarding() {
       }));
     }
   }, [router.query.package]);
+
+  useEffect(() => {
+    if (isLoading) {
+      const interval = setInterval(() => {
+        setProgress((prev) => {
+          if (prev >= 100) {
+            clearInterval(interval);
+            return 100;
+          }
+          return prev + 2;
+        });
+      }, 100);
+      return () => clearInterval(interval);
+    }
+  }, [isLoading]);
 
   const updateFormData = (field: keyof FormData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -60,10 +76,34 @@ export default function Onboarding() {
   };
 
   const packages = [
-    { id: 'free', name: 'Free', description: 'Perfect for testing' },
-    { id: 'basic', name: 'Basic', description: '৳499/month' },
-    { id: 'standard', name: 'Standard', description: '৳799/month' },
-    { id: 'premium', name: 'Premium', description: '৳999/month' },
+    {
+      id: 'free',
+      name: 'Free',
+      description: 'Perfect for testing',
+      icon: '🎁',
+      color: 'from-gray-400 to-gray-600',
+    },
+    {
+      id: 'basic',
+      name: 'Basic',
+      description: '৳499/month',
+      icon: '📦',
+      color: 'from-blue-400 to-blue-600',
+    },
+    {
+      id: 'standard',
+      name: 'Standard',
+      description: '৳799/month',
+      icon: '⭐',
+      color: 'from-purple-400 to-purple-600',
+    },
+    {
+      id: 'premium',
+      name: 'Premium',
+      description: '৳999/month',
+      icon: '👑',
+      color: 'from-amber-400 to-amber-600',
+    },
   ];
 
   const isStepValid = () => {
@@ -81,23 +121,90 @@ export default function Onboarding() {
     }
   };
 
-  // Loading Screen
+  const stepTitles = ['Company Info', 'Your Details', 'Choose Plan'];
+  const stepDescriptions = [
+    'Tell us about your business',
+    'We need to know who you are',
+    'Select the perfect plan for you',
+  ];
+
+  // Loading Screen with enhanced animations
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-blue-600 to-indigo-600">
-        <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} className="text-center">
+      <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-linear-to-br from-blue-600 via-indigo-600 to-purple-600">
+        {/* Animated background particles */}
+        {[...Array(20)].map((_, i) => (
           <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
-            className="mx-auto mb-8 h-24 w-24 rounded-full border-8 border-white border-t-transparent"
+            key={i}
+            className="absolute h-2 w-2 rounded-full bg-white"
+            initial={{
+              x: Math.random() * 1920,
+              y: Math.random() * 1000,
+              opacity: Math.random() * 0.5,
+            }}
+            animate={{
+              y: [null, Math.random() * 1000],
+              opacity: [null, 0],
+            }}
+            transition={{
+              duration: Math.random() * 3 + 2,
+              repeat: Infinity,
+              ease: 'linear',
+            }}
           />
+        ))}
+
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+          className="relative z-10 text-center"
+        >
+          {/* Glowing spinner */}
+          <div className="relative mx-auto mb-8 h-32 w-32">
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+              className="absolute inset-0 rounded-full border-8 border-transparent border-t-white shadow-lg shadow-white/50"
+            />
+            <motion.div
+              animate={{ rotate: -360 }}
+              transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
+              className="absolute inset-2 rounded-full border-4 border-transparent border-t-blue-200"
+            />
+            <motion.div
+              animate={{ scale: [1, 1.2, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}
+              className="absolute inset-0 flex items-center justify-center text-4xl"
+            >
+              🚀
+            </motion.div>
+          </div>
+
           <motion.h2
             animate={{ opacity: [0.5, 1, 0.5] }}
             transition={{ duration: 2, repeat: Infinity }}
-            className="text-3xl font-bold text-white md:text-4xl"
+            className="mb-6 text-3xl font-bold text-white md:text-4xl"
           >
             Setting up your POS...
           </motion.h2>
+
+          {/* Progress bar */}
+          <div className="mx-auto w-80 overflow-hidden rounded-full bg-white/20 p-1 backdrop-blur-sm">
+            <motion.div
+              className="h-3 rounded-full bg-linear-to-r from-white to-blue-200 shadow-lg"
+              initial={{ width: 0 }}
+              animate={{ width: `${progress}%` }}
+              transition={{ duration: 0.3 }}
+            />
+          </div>
+          <motion.p
+            className="mt-4 text-lg text-white/90"
+            animate={{ opacity: [0.7, 1, 0.7] }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+          >
+            {progress}% Complete
+          </motion.p>
           <motion.div
             initial={{ width: 0 }}
             animate={{ width: '100%' }}
@@ -116,218 +223,378 @@ export default function Onboarding() {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-gray-50 via-blue-50 to-indigo-50 px-4 py-12">
-      <div className="mx-auto max-w-3xl">
-        {/* Header */}
-        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-12 text-center">
-          <h1 className="mb-4 text-4xl font-extrabold text-gray-900 md:text-5xl">Welcome to POS Software</h1>
-          <p className="text-xl text-gray-600">Let's get you set up in just a few steps</p>
+    <div className="relative min-h-screen overflow-hidden bg-linear-to-br from-indigo-50 via-purple-50 to-pink-50 px-4 py-12">
+      {/* Animated background elements */}
+      <motion.div
+        animate={{
+          scale: [1, 1.2, 1],
+          rotate: [0, 180, 0],
+        }}
+        transition={{
+          duration: 20,
+          repeat: Infinity,
+          ease: 'linear',
+        }}
+        className="absolute top-20 -left-20 h-96 w-96 rounded-full bg-blue-300/30 blur-3xl"
+      />
+      <motion.div
+        animate={{
+          scale: [1, 1.3, 1],
+          rotate: [0, -180, 0],
+        }}
+        transition={{
+          duration: 25,
+          repeat: Infinity,
+          ease: 'linear',
+        }}
+        className="absolute -right-20 bottom-20 h-96 w-96 rounded-full bg-purple-300/30 blur-3xl"
+      />
+
+      <div className="relative z-10 mx-auto max-w-4xl">
+        {/* Header with animation */}
+        <motion.div
+          initial={{ opacity: 0, y: -30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="mb-6 text-center"
+        >
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ type: 'spring', duration: 0.6, delay: 0.2 }}
+            className="mb-2 inline-block rounded-full bg-linear-to-r from-blue-500 to-purple-500 p-3 text-3xl shadow-lg"
+          >
+            🚀
+          </motion.div>
+          <h1 className="mb-2 bg-linear-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-3xl font-extrabold text-transparent md:text-4xl">
+            Welcome Aboard!
+          </h1>
+          <p className="text-sm text-gray-600">Let's get you set up in just a few steps</p>
         </motion.div>
 
-        {/* Step Indicator */}
-        <div className="mb-12">
-          <div className="flex items-center justify-center gap-4">
+        {/* Compact Smart Progress Indicator */}
+        <div className="mb-6">
+          {/* Progress bar background */}
+          <div className="relative mb-6">
+            <div className="h-2 w-full overflow-hidden rounded-full bg-gray-200">
+              <motion.div
+                className="h-full rounded-full bg-linear-to-r from-blue-500 via-purple-500 to-indigo-600"
+                initial={{ width: '0%' }}
+                animate={{
+                  width: currentStep === 1 ? '33%' : currentStep === 2 ? '66%' : '100%',
+                }}
+                transition={{ duration: 0.6, ease: 'easeOut' }}
+              />
+            </div>
+
+            {/* Step indicators */}
+          </div>
+
+          {/* Step info cards */}
+          <div className="grid grid-cols-3 gap-3">
             {[1, 2, 3].map((step) => (
-              <React.Fragment key={step}>
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ delay: step * 0.1 }}
-                  className="flex flex-col items-center"
-                >
+              <motion.div
+                key={step}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: step * 0.15 }}
+                className={`group relative overflow-hidden rounded-xl border p-4 transition-all duration-300 ${
+                  currentStep === step
+                    ? 'border-blue-400 bg-linear-to-br from-blue-50 to-indigo-50 shadow-lg shadow-blue-200/50'
+                    : currentStep > step
+                      ? 'border-green-300 bg-green-50/50'
+                      : 'border-gray-200 bg-white/50'
+                }`}
+              >
+                {/* Shimmer effect for active step */}
+                {currentStep === step && (
                   <motion.div
+                    className="absolute inset-0 bg-linear-to-r from-transparent via-white/40 to-transparent"
                     animate={{
-                      scale: currentStep === step ? 1.2 : 1,
-                      backgroundColor: currentStep >= step ? 'rgb(37, 99, 235)' : 'rgb(229, 231, 235)',
+                      x: ['-100%', '200%'],
                     }}
-                    className={`flex h-12 w-12 items-center justify-center rounded-full font-bold ${
-                      currentStep >= step ? 'text-white' : 'text-gray-500'
-                    }`}
-                  >
-                    {currentStep > step ? (
-                      <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                      </svg>
-                    ) : (
-                      step
-                    )}
-                  </motion.div>
-                  <span className="mt-2 text-sm font-medium text-gray-600">
-                    {step === 1 && 'Company'}
-                    {step === 2 && 'User Info'}
-                    {step === 3 && 'Package'}
-                  </span>
-                </motion.div>
-                {step < 3 && (
-                  <motion.div
-                    initial={{ scaleX: 0 }}
-                    animate={{
-                      scaleX: 1,
-                      backgroundColor: currentStep > step ? 'rgb(37, 99, 235)' : 'rgb(229, 231, 235)',
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      repeatDelay: 1,
                     }}
-                    className="h-1 w-16 rounded"
                   />
                 )}
-              </React.Fragment>
+
+                <div className="relative flex items-center gap-3">
+                  {/* Emoji */}
+                  <motion.div
+                    animate={{
+                      rotate: currentStep === step ? [0, 10, -10, 0] : 0,
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: currentStep === step ? Infinity : 0,
+                    }}
+                    className="text-2xl"
+                  >
+                    {step === 1 ? '🏢' : step === 2 ? '👤' : '📊'}
+                  </motion.div>
+
+                  {/* Text */}
+                  <div className="flex-1">
+                    <h4
+                      className={`text-sm leading-tight font-bold ${
+                        currentStep >= step ? 'text-gray-900' : 'text-gray-500'
+                      }`}
+                    >
+                      {stepTitles[step - 1]}
+                    </h4>
+                    <p className={`mt-0.5 text-xs ${currentStep >= step ? 'text-gray-600' : 'text-gray-400'}`}>
+                      {stepDescriptions[step - 1]}
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
             ))}
           </div>
         </div>
 
-        {/* Form Card */}
+        {/* Glassmorphism Form Card */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          className="rounded-2xl bg-white p-8 shadow-xl md:p-12"
+          transition={{ duration: 0.5, delay: 0.3 }}
+          className="relative overflow-hidden rounded-3xl border border-white/20 bg-white/70 p-6 shadow-2xl backdrop-blur-xl md:p-8"
         >
-          <AnimatePresence mode="wait">
-            {/* Step 1: Company Info */}
-            {currentStep === 1 && (
-              <motion.div
-                key="step1"
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -50 }}
-                transition={{ duration: 0.3 }}
-              >
-                <h2 className="mb-6 text-2xl font-bold text-gray-900">Company Information</h2>
-                <div className="space-y-6">
-                  <div>
-                    <label className="mb-2 block text-sm font-medium text-gray-700">
-                      Company Name <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.companyName}
-                      onChange={(e) => updateFormData('companyName', e.target.value)}
-                      className="w-full rounded-lg border-2 border-gray-300 px-4 py-3 text-gray-900 transition-colors focus:border-blue-500 focus:outline-none"
-                      placeholder="Enter your company name"
-                    />
-                  </div>
-                </div>
-              </motion.div>
-            )}
+          {/* Gradient overlay */}
+          <div className="absolute inset-0 bg-linear-to-br from-white/50 to-transparent" />
 
-            {/* Step 2: User Info */}
-            {currentStep === 2 && (
-              <motion.div
-                key="step2"
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -50 }}
-                transition={{ duration: 0.3 }}
-              >
-                <h2 className="mb-6 text-2xl font-bold text-gray-900">Basic User Information</h2>
-                <div className="space-y-6">
-                  <div>
-                    <label className="mb-2 block text-sm font-medium text-gray-700">
-                      Full Name <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.fullName}
-                      onChange={(e) => updateFormData('fullName', e.target.value)}
-                      className="w-full rounded-lg border-2 border-gray-300 px-4 py-3 text-gray-900 transition-colors focus:border-blue-500 focus:outline-none"
-                      placeholder="Enter your full name"
-                    />
-                  </div>
-                  <div>
-                    <label className="mb-2 block text-sm font-medium text-gray-700">
-                      Email <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="email"
-                      value={formData.email}
-                      onChange={(e) => updateFormData('email', e.target.value)}
-                      className="w-full rounded-lg border-2 border-gray-300 px-4 py-3 text-gray-900 transition-colors focus:border-blue-500 focus:outline-none"
-                      placeholder="Enter your email"
-                    />
-                  </div>
-                  <div>
-                    <label className="mb-2 block text-sm font-medium text-gray-700">
-                      Phone Number <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="tel"
-                      value={formData.phone}
-                      onChange={(e) => updateFormData('phone', e.target.value)}
-                      className="w-full rounded-lg border-2 border-gray-300 px-4 py-3 text-gray-900 transition-colors focus:border-blue-500 focus:outline-none"
-                      placeholder="Enter your phone number"
-                    />
-                  </div>
-                </div>
-              </motion.div>
-            )}
+          <div className="relative z-10">
+            <AnimatePresence mode="wait">
+              {/* Step 1: Company Info */}
+              {currentStep === 1 && (
+                <motion.div
+                  key="step1"
+                  initial={{ opacity: 0, x: 50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -50 }}
+                  transition={{ duration: 0.4, type: 'spring' }}
+                >
+                  <motion.div
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.2 }}
+                  >
+                    <div className="mb-4 flex items-center gap-2">
+                      <div className="rounded-xl bg-blue-100 p-2 text-xl">🏢</div>
+                      <h2 className="text-2xl font-bold text-gray-900">Company Information</h2>
+                    </div>
+                    <p className="mb-6 text-sm text-gray-600">Tell us about your business to get started</p>
+                  </motion.div>
 
-            {/* Step 3: Package Selection */}
-            {currentStep === 3 && (
-              <motion.div
-                key="step3"
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -50 }}
-                transition={{ duration: 0.3 }}
-              >
-                <h2 className="mb-6 text-2xl font-bold text-gray-900">Choose Your Package</h2>
-                <div className="space-y-4">
-                  {packages.map((pkg) => (
+                  <div className="space-y-4">
                     <motion.div
-                      key={pkg.id}
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      onClick={() => updateFormData('package', pkg.id)}
-                      className={`cursor-pointer rounded-xl border-2 p-6 transition-all ${
-                        formData.package === pkg.id
-                          ? 'border-blue-500 bg-blue-50 shadow-lg'
-                          : 'border-gray-200 bg-white hover:border-gray-300'
-                      }`}
+                      initial={{ y: 20, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      transition={{ delay: 0.3 }}
                     >
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <h3 className="text-lg font-bold text-gray-900">{pkg.name}</h3>
-                          <p className="text-gray-600">{pkg.description}</p>
-                        </div>
-                        <div
-                          className={`flex h-6 w-6 items-center justify-center rounded-full border-2 ${
-                            formData.package === pkg.id ? 'border-blue-500 bg-blue-500' : 'border-gray-300'
-                          }`}
-                        >
-                          {formData.package === pkg.id && (
-                            <motion.svg
-                              initial={{ scale: 0 }}
-                              animate={{ scale: 1 }}
-                              className="h-4 w-4 text-white"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                            </motion.svg>
-                          )}
-                        </div>
+                      <label className="mb-2 block text-sm font-semibold text-gray-700">
+                        Company Name <span className="text-red-500">*</span>
+                      </label>
+                      <div className="group relative">
+                        <div className="absolute inset-0 rounded-xl bg-linear-to-r from-blue-500 to-purple-500 opacity-0 blur transition-opacity group-focus-within:opacity-20" />
+                        <input
+                          type="text"
+                          value={formData.companyName}
+                          onChange={(e) => updateFormData('companyName', e.target.value)}
+                          className="relative w-full rounded-xl border-2 border-gray-200 bg-white/50 px-5 py-4 text-lg text-gray-900 backdrop-blur-sm transition-all focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/20 focus:outline-none"
+                          placeholder="e.g., ABC Technologies Ltd."
+                        />
                       </div>
                     </motion.div>
-                  ))}
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+                  </div>
+                </motion.div>
+              )}
 
-          {/* Navigation Buttons */}
-          <div className="mt-8 flex gap-4">
-            {currentStep > 1 && (
-              <Button onClick={prevStep} variant="outline" size="lg" className="flex-1">
-                Back
-              </Button>
-            )}
-            {currentStep < 3 ? (
-              <Button onClick={nextStep} disabled={!isStepValid()} size="lg" className="flex-1">
-                Next
-              </Button>
-            ) : (
-              <Button onClick={handleSubmit} disabled={!isStepValid()} size="lg" className="flex-1">
-                Complete Setup
-              </Button>
-            )}
+              {/* Step 2: User Info */}
+              {currentStep === 2 && (
+                <motion.div
+                  key="step2"
+                  initial={{ opacity: 0, x: 50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -50 }}
+                  transition={{ duration: 0.4, type: 'spring' }}
+                >
+                  <motion.div
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.2 }}
+                  >
+                    <div className="mb-4 flex items-center gap-2">
+                      <div className="rounded-xl bg-purple-100 p-2 text-xl">👤</div>
+                      <h2 className="text-2xl font-bold text-gray-900">Your Details</h2>
+                    </div>
+                    <p className="mb-6 text-sm text-gray-600">We need to know who you are</p>
+                  </motion.div>
+
+                  <div className="space-y-4">
+                    <motion.div
+                      initial={{ y: 20, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      transition={{ delay: 0.3 }}
+                    >
+                      <label className="mb-2 block text-sm font-semibold text-gray-700">
+                        Full Name <span className="text-red-500">*</span>
+                      </label>
+                      <div className="group relative">
+                        <div className="absolute inset-0 rounded-xl bg-linear-to-r from-purple-500 to-pink-500 opacity-0 blur transition-opacity group-focus-within:opacity-20" />
+                        <input
+                          type="text"
+                          value={formData.fullName}
+                          onChange={(e) => updateFormData('fullName', e.target.value)}
+                          className="relative w-full rounded-xl border-2 border-gray-200 bg-white/50 px-5 py-4 text-lg text-gray-900 backdrop-blur-sm transition-all focus:border-purple-500 focus:bg-white focus:ring-4 focus:ring-purple-500/20 focus:outline-none"
+                          placeholder="e.g., John Doe"
+                        />
+                      </div>
+                    </motion.div>
+
+                    <motion.div
+                      initial={{ y: 20, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      transition={{ delay: 0.4 }}
+                    >
+                      <label className="mb-3 block text-sm font-semibold text-gray-700">
+                        Email <span className="text-red-500">*</span>
+                      </label>
+                      <div className="group relative">
+                        <div className="absolute inset-0 rounded-xl bg-linear-to-r from-purple-500 to-pink-500 opacity-0 blur transition-opacity group-focus-within:opacity-20" />
+                        <input
+                          type="email"
+                          value={formData.email}
+                          onChange={(e) => updateFormData('email', e.target.value)}
+                          className="relative w-full rounded-xl border-2 border-gray-200 bg-white/50 px-5 py-4 text-lg text-gray-900 backdrop-blur-sm transition-all focus:border-purple-500 focus:bg-white focus:ring-4 focus:ring-purple-500/20 focus:outline-none"
+                          placeholder="e.g., john@company.com"
+                        />
+                      </div>
+                    </motion.div>
+
+                    <motion.div
+                      initial={{ y: 20, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      transition={{ delay: 0.5 }}
+                    >
+                      <label className="mb-3 block text-sm font-semibold text-gray-700">
+                        Phone Number <span className="text-red-500">*</span>
+                      </label>
+                      <div className="group relative">
+                        <div className="absolute inset-0 rounded-xl bg-linear-to-r from-purple-500 to-pink-500 opacity-0 blur transition-opacity group-focus-within:opacity-20" />
+                        <input
+                          type="tel"
+                          value={formData.phone}
+                          onChange={(e) => updateFormData('phone', e.target.value)}
+                          className="relative w-full rounded-xl border-2 border-gray-200 bg-white/50 px-5 py-4 text-lg text-gray-900 backdrop-blur-sm transition-all focus:border-purple-500 focus:bg-white focus:ring-4 focus:ring-purple-500/20 focus:outline-none"
+                          placeholder="e.g., +880 1234 567890"
+                        />
+                      </div>
+                    </motion.div>
+                  </div>
+                </motion.div>
+              )}
+
+              {/* Step 3: Package Selection */}
+              {currentStep === 3 && (
+                <motion.div
+                  key="step3"
+                  initial={{ opacity: 0, x: 50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -50 }}
+                  transition={{ duration: 0.4, type: 'spring' }}
+                >
+                  <motion.div
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.2 }}
+                  >
+                    <div className="mb-4 flex items-center gap-2">
+                      <div className="rounded-xl bg-amber-100 p-2 text-xl">🎯</div>
+                      <h2 className="text-2xl font-bold text-gray-900">Choose Your Plan</h2>
+                    </div>
+                    <p className="mb-6 text-sm text-gray-600">Select the perfect package for your business needs</p>
+                  </motion.div>
+
+                  <div className="grid gap-3 md:grid-cols-2">
+                    {packages.map((pkg, index) => (
+                      <motion.div
+                        key={pkg.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.3 + index * 0.1 }}
+                        whileHover={{ scale: 1.03, y: -5 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => updateFormData('package', pkg.id)}
+                        className={`group relative cursor-pointer overflow-hidden rounded-2xl border-2 p-6 transition-all ${
+                          formData.package === pkg.id
+                            ? 'border-blue-500 bg-linear-to-br from-blue-50 to-purple-50 shadow-xl shadow-blue-500/20'
+                            : 'border-gray-200 bg-white/50 hover:border-gray-300 hover:shadow-lg'
+                        }`}
+                      >
+                        {/* Gradient background effect */}
+                        {formData.package === pkg.id && (
+                          <motion.div
+                            layoutId="selected-package"
+                            className={`absolute inset-0 bg-linear-to-br ${pkg.color} opacity-10`}
+                            transition={{ type: 'spring', duration: 0.6 }}
+                          />
+                        )}
+
+                        <div className="relative z-10">
+                          <div className="mb-4 flex items-center justify-between">
+                            <span className="text-4xl">{pkg.icon}</span>
+                            <motion.div
+                              animate={{
+                                scale: formData.package === pkg.id ? 1 : 0,
+                                opacity: formData.package === pkg.id ? 1 : 0,
+                              }}
+                              className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-500"
+                            >
+                              <svg className="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                              </svg>
+                            </motion.div>
+                          </div>
+                          <h3 className="mb-2 text-2xl font-bold text-gray-900">{pkg.name}</h3>
+                          <p className="text-lg font-medium text-gray-600">{pkg.description}</p>
+                        </div>
+
+                        {/* Hover glow effect */}
+                        <div
+                          className={`absolute inset-0 bg-linear-to-br ${pkg.color} opacity-0 blur-xl transition-opacity group-hover:opacity-20`}
+                        />
+                      </motion.div>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Navigation Buttons */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 }}
+              className="mt-10 flex gap-4"
+            >
+              {currentStep > 1 && (
+                <Button onClick={prevStep} variant="outline" size="lg" className="flex-1">
+                  Back
+                </Button>
+              )}
+              {currentStep < 3 ? (
+                <Button onClick={nextStep} disabled={!isStepValid()} size="lg" className="flex-1">
+                  Next
+                </Button>
+              ) : (
+                <Button onClick={handleSubmit} disabled={!isStepValid()} size="lg" className="flex-1">
+                  Complete Setup
+                </Button>
+              )}
+            </motion.div>
           </div>
         </motion.div>
       </div>
