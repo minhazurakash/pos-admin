@@ -1,0 +1,31 @@
+@use 'sass:meta';
+@use 'utilities/index.scss' as *;
+@use 'global' as *;
+@use 'core/index.scss' as *;
+@use 'antd_customization' as *;
+@import 'tailwindcss/preflight';
+@import 'tailwindcss/utilities';
+
+@layer components {
+  // Customize Scrollbar
+  .hidden_scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  .designed_scrollbar {
+    &::-webkit-scrollbar {
+      width: 0.25rem;
+      &-track {
+        background-color: var(--primary-300);
+      }
+      &-thumb {
+        background-color: var(--primary-500);
+        border-radius: 1rem;
+      }
+    }
+  }
+}

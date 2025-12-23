@@ -1,0 +1,304 @@
+// form gap
+.ant-form-item {
+  margin-bottom: 0;
+}
+
+@for $i from 0 through 8 {
+  .form-gap-#{$i} {
+    .ant-form-item {
+      margin: $i * 2px;
+      &:first-child {
+        margin-top: 0;
+      }
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+
+@for $i from 0 through 8 {
+  .form-gap-x-#{$i} {
+    .ant-form-item {
+      margin-inline: $i * 2px;
+    }
+  }
+}
+
+@for $i from 0 through 8 {
+  .form-gap-y-#{$i} {
+    .ant-form-item {
+      margin-block: $i * 2px;
+      &:first-child {
+        margin-top: 0;
+      }
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+
+@for $i from 0 through 8 {
+  .form-gap-t-#{$i} {
+    .ant-form-item {
+      margin-top: $i * 2px;
+      &:first-child {
+        margin-top: 0;
+      }
+    }
+  }
+}
+
+@for $i from 0 through 8 {
+  .form-gap-b-#{$i} {
+    .ant-form-item {
+      margin-bottom: $i * 2px;
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+
+@for $i from 0 through 8 {
+  .form-gap-l-#{$i} {
+    .ant-form-item {
+      margin-left: $i * 2px;
+    }
+  }
+}
+
+@for $i from 0 through 8 {
+  .form-gap-r-#{$i} {
+    .ant-form-item {
+      margin-right: $i * 2px;
+    }
+  }
+}
+
+// tailwind css override antd style fixing
+// .ant-btn-primary {
+//   background: var(--blue-500);
+// }
+// .ant-switch {
+//   background: rgba(0, 0, 0, 0.25);
+// }
+
+// antd button icon center issue fix
+.ant-btn {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  > span {
+    line-height: normal;
+  }
+}
+
+.country_search_form_item {
+  .ant-form-item-label {
+    label {
+      display: block;
+
+      &::before {
+        display: none !important;
+      }
+      label.ant-checkbox-wrapper {
+        height: 20px;
+        margin: 0;
+        padding: 0;
+        line-height: 0;
+      }
+    }
+  }
+}
+
+.country_nested_search_form_item {
+  .ant-form-item-label {
+    label {
+      display: block;
+      height: auto !important;
+      &::before {
+        display: none !important;
+      }
+      label.ant-checkbox-wrapper {
+        height: 20px;
+        margin: 0;
+        padding: 0;
+        line-height: 0;
+      }
+    }
+  }
+}
+
+.antd_floating_input_field {
+  position: relative;
+  z-index: 11;
+  & .ant-select-focused {
+    .ant-select-selector {
+      box-shadow: none;
+    }
+  }
+  .ant-form-item-label {
+    position: absolute;
+    top: calc(50% - 10px);
+    margin-left: 5px;
+    transition: all 0.2s ease-in-out;
+    label {
+      padding-left: 10px;
+      font-size: 16px;
+      line-height: 20px;
+      transition: all 0.2s ease-in-out;
+      & > p {
+        display: flex;
+        gap: 5px;
+        align-items: center;
+      }
+    }
+  }
+  &.input_focused {
+    .ant-form-item-label {
+      position: absolute;
+      top: -10px;
+      z-index: 11;
+      background-color: white;
+      margin-left: 10px !important;
+      padding-right: 5px !important;
+      font-size: 14px;
+
+      label {
+        font-size: 14px;
+        line-height: 20px;
+        transition: all 0.2s ease-in-out;
+      }
+    }
+  }
+  .ant-select {
+    .ant-select-selector {
+      background-color: transparent;
+    }
+    & .ant-select-focused {
+      .ant-select-selector {
+        box-shadow: none;
+      }
+    }
+    .ant-select-selection-item {
+      height: 16px;
+      // margin-top: y;
+      .ant-select-selection-item-content {
+        line-height: 18px;
+        font-size: 15px;
+      }
+    }
+    &.large {
+      .ant-select-selector {
+        height: 50px !important;
+        .ant-select-selection-item {
+          height: 100%;
+          display: flex;
+          align-items: center;
+        }
+      }
+    }
+    &.medium {
+      .ant-select-selector {
+        height: 40px !important;
+        .ant-select-selection-item {
+          height: 100%;
+          display: flex;
+          align-items: center;
+        }
+      }
+    }
+  }
+}
+.ant-upload-wrapper {
+  width: auto !important;
+}
+
+.antd_floating_input_field {
+  position: relative;
+  z-index: 11;
+  width: 100%;
+  label {
+    position: absolute;
+    top: calc(50% - 10px);
+    margin-left: 5px;
+    padding-left: 10px;
+    font-size: 16px;
+    line-height: 20px;
+    transition: all 0.2s ease-in-out;
+    & > p {
+      display: flex;
+      gap: 5px;
+      align-items: center;
+    }
+  }
+  &.input_focused {
+    label {
+      position: absolute;
+      top: -10px;
+      z-index: 11;
+      background-color: white;
+      margin-left: 10px !important;
+      padding-right: 5px !important;
+      font-size: 14px;
+      transition: all 0.2s ease-in-out;
+    }
+    &.disabled {
+      label {
+        background-color: #f5f5f500;
+        &::before {
+          content: '';
+          position: absolute;
+          width: 100%;
+          height: 10px;
+          background-color: #f5f5f5;
+          left: 0;
+          top: 10px;
+          z-index: -1;
+        }
+      }
+    }
+  }
+  .ant-select {
+    .ant-select-selector {
+      background-color: transparent;
+    }
+    & .ant-select-focused {
+      box-shadow: none;
+    }
+    &.large {
+      .ant-select-selector {
+        height: 50px !important;
+        .ant-select-selection-item {
+          height: 100%;
+          display: flex;
+          align-items: center;
+        }
+      }
+    }
+    &.medium {
+      .ant-select-selector {
+        height: 40px !important;
+        .ant-select-selection-item {
+          height: 100%;
+          display: flex;
+          align-items: center;
+        }
+      }
+    }
+  }
+}
+
+.ant-page-header-heading-title {
+  text-transform: capitalize;
+}
+.ant-drawer-title {
+  text-transform: capitalize;
+}
+
+.ant-message-custom-content {
+  display: flex;
+  align-items: center;
+}

@@ -1,0 +1,226 @@
+@layer utilities {
+  //heading
+  .display-regular-56 {
+    @apply text-[56px] font-normal;
+  }
+  .display-medium-56 {
+    @apply text-[56px] font-medium;
+  }
+  .display-semibold-56 {
+    @apply text-[56px] font-semibold;
+  }
+  .display-bold-56 {
+    @apply text-[56px] font-bold;
+  }
+
+  .h1-regular-40 {
+    @apply text-[40px] font-normal;
+  }
+  .h1-medium-40 {
+    @apply text-[40px] font-medium;
+  }
+  .h1-semibold-40 {
+    @apply text-[40px] font-semibold;
+  }
+  .h1-bold-40 {
+    @apply text-[40px] font-bold;
+  }
+
+  .h2-regular-32 {
+    @apply text-[32px] font-normal;
+  }
+  .h2-medium-32 {
+    @apply text-[32px] font-medium;
+  }
+  .h2-semibold-32 {
+    @apply text-[32px] font-semibold;
+  }
+  .h2-bold-32 {
+    @apply text-[32px] font-bold;
+  }
+
+  .h3-regular-24 {
+    @apply text-[24px] font-normal;
+  }
+  .h3-medium-24 {
+    @apply text-[24px] font-medium;
+  }
+  .h3-semibold-24 {
+    @apply text-[24px] font-semibold;
+  }
+  .h3-bold-24 {
+    @apply text-[24px] font-bold;
+  }
+
+  .h4-regular-22 {
+    @apply text-[22px] font-normal;
+  }
+  .h4-medium-22 {
+    @apply text-[22px] font-medium;
+  }
+  .h4-semibold-22 {
+    @apply text-[22px] font-semibold;
+  }
+  .h4-bold-22 {
+    @apply text-[22px] font-bold;
+  }
+
+  .h5-regular-20 {
+    @apply text-[20px] font-normal;
+  }
+  .h5-medium-20 {
+    @apply text-[20px] font-medium;
+  }
+  .h5-semibold-20 {
+    @apply text-[20px] font-semibold;
+  }
+  .h5-bold-20 {
+    @apply text-[20px] font-bold;
+  }
+
+  .h6-regular-18 {
+    @apply text-[18px] font-normal;
+  }
+  .h6-medium-18 {
+    @apply text-[18px] font-medium;
+  }
+  .h6-semibold-18 {
+    @apply text-[18px] font-semibold;
+  }
+  .h6-bold-18 {
+    @apply text-[18px] font-bold;
+  }
+
+  // text
+  .text-regular-16 {
+    @apply text-[16px];
+  }
+  .text-regular-14 {
+    @apply text-sm;
+  }
+  .text-regular-13 {
+    @apply text-[13px];
+  }
+  .text-regular-12 {
+    @apply text-xs;
+  }
+  .text-medium-16 {
+    @apply text-[16px] font-medium;
+  }
+  .text-medium-14 {
+    @apply text-sm font-medium;
+  }
+  .text-medium-13 {
+    @apply text-[13px] font-medium;
+  }
+  .text-semibold-16 {
+    @apply text-[16px] font-semibold;
+  }
+  .text-semibold-14 {
+    @apply text-sm font-semibold;
+  }
+  .text-semibold-13 {
+    @apply text-[13px] font-semibold;
+  }
+  .text-bold-16 {
+    @apply text-[16px] font-bold;
+  }
+  .text-bold-14 {
+    @apply text-sm font-bold;
+  }
+  .text-bold-13 {
+    @apply text-[13px] font-bold;
+  }
+
+  //title
+  .title-regular-18 {
+    @apply text-lg;
+  }
+  .title-medium-18 {
+    @apply text-lg font-medium;
+  }
+  .title-semibold-18 {
+    @apply text-lg font-semibold;
+  }
+  .title-bold-18 {
+    @apply text-lg font-bold;
+  }
+
+  .title-regular-16 {
+    @apply text-[16px];
+  }
+  .title-medium-16 {
+    @apply text-[16px] font-medium;
+  }
+  .title-semibold-16 {
+    @apply text-[16px] font-semibold;
+  }
+  .title-bold-16 {
+    @apply text-[16px] font-bold;
+  }
+
+  .title-regular-15 {
+    @apply text-[15px];
+  }
+  .title-medium-15 {
+    @apply text-[15px] font-medium;
+  }
+  .title-semibold-15 {
+    @apply text-[15px] font-semibold;
+  }
+  .title-bold-15 {
+    @apply text-[15px] font-bold;
+  }
+
+  .title-regular-14 {
+    @apply text-sm;
+  }
+  .title-medium-14 {
+    @apply text-sm font-medium;
+  }
+  .title-semibold-14 {
+    @apply text-sm font-semibold;
+  }
+  .title-bold-14 {
+    @apply text-sm font-bold;
+  }
+
+  .title-regular-13 {
+    @apply text-[13px];
+  }
+  .title-medium-13 {
+    @apply text-[13px] font-medium;
+  }
+  .title-semibold-13 {
+    @apply text-[13px] font-semibold;
+  }
+  .title-bold-13 {
+    @apply text-[13px] font-bold;
+  }
+
+  .title-regular-12 {
+    @apply text-xs;
+  }
+  .title-medium-12 {
+    @apply text-xs font-medium;
+  }
+  .title-semibold-12 {
+    @apply text-xs font-semibold;
+  }
+  .title-bold-12 {
+    @apply text-xs font-bold;
+  }
+
+  .title-regular-11 {
+    @apply text-[11px];
+  }
+  .title-medium-11 {
+    @apply text-[11px] font-medium;
+  }
+  .title-semibold-11 {
+    @apply text-[11px] font-semibold;
+  }
+  .title-bold-11 {
+    @apply text-[11px] font-bold;
+  }
+}
