@@ -9,39 +9,131 @@ export const Paths = {
     resetPassword: '/auth/reset-password',
     signup: '/auth/sign-up',
   },
-  profile: {
-    root: '/profile',
-    list: '/profile/list',
-    create: '/profile/create',
-    update: (profileId: string) => `/profile/update/${profileId}`,
-  },
-  course: {
-    root: '/course',
-    list: '/course/list',
-    category: {
-      root: '/course/category',
-      list: '/course/category/list',
+  // POS System Paths
+  products: {
+    root: '/products',
+    list: '/products/list',
+    create: '/products/create',
+    update: (productId: string) => `/products/update/${productId}`,
+    view: (productId: string) => `/products/view/${productId}`,
+    categories: {
+      root: '/products/categories',
+      list: '/products/categories/list',
+      create: '/products/categories/create',
+      update: (categoryId: string) => `/products/categories/update/${categoryId}`,
     },
-    instructor: {
-      root: '/course/instructor',
-      list: '/course/instructor/list',
+    brands: {
+      root: '/products/brands',
+      list: '/products/brands/list',
+      create: '/products/brands/create',
+      update: (brandId: string) => `/products/brands/update/${brandId}`,
     },
-    curriculum: {
-      root: '/course/curriculum',
-      list: '/course/curriculum/list',
-    },
-    curriculumLesson: {
-      root: '/course/curriculum-lesson',
-      list: '/course/curriculum-lesson/list',
-    },
-    faq: {
-      root: '/course/faq',
-      list: '/course/faq/list',
+    units: {
+      root: '/products/units',
+      list: '/products/units/list',
     },
   },
-  enrollment: {
-    root: '/enrollment',
-    list: '/enrollment/list',
+  sales: {
+    root: '/sales',
+    pos: '/sales/pos',
+    list: '/sales/list',
+    create: '/sales/create',
+    view: (saleId: string) => `/sales/view/${saleId}`,
+    returns: {
+      root: '/sales/returns',
+      list: '/sales/returns/list',
+      create: '/sales/returns/create',
+    },
+  },
+  purchases: {
+    root: '/purchases',
+    list: '/purchases/list',
+    create: '/purchases/create',
+    update: (purchaseId: string) => `/purchases/update/${purchaseId}`,
+    view: (purchaseId: string) => `/purchases/view/${purchaseId}`,
+    returns: {
+      root: '/purchases/returns',
+      list: '/purchases/returns/list',
+      create: '/purchases/returns/create',
+    },
+  },
+  customers: {
+    root: '/customers',
+    list: '/customers/list',
+    create: '/customers/create',
+    update: (customerId: string) => `/customers/update/${customerId}`,
+    view: (customerId: string) => `/customers/view/${customerId}`,
+    groups: {
+      root: '/customers/groups',
+      list: '/customers/groups/list',
+    },
+  },
+  suppliers: {
+    root: '/suppliers',
+    list: '/suppliers/list',
+    create: '/suppliers/create',
+    update: (supplierId: string) => `/suppliers/update/${supplierId}`,
+    view: (supplierId: string) => `/suppliers/view/${supplierId}`,
+  },
+  inventory: {
+    root: '/inventory',
+    stock: '/inventory/stock',
+    adjustments: {
+      root: '/inventory/adjustments',
+      list: '/inventory/adjustments/list',
+      create: '/inventory/adjustments/create',
+    },
+    transfers: {
+      root: '/inventory/transfers',
+      list: '/inventory/transfers/list',
+      create: '/inventory/transfers/create',
+    },
+    warehouses: {
+      root: '/inventory/warehouses',
+      list: '/inventory/warehouses/list',
+      create: '/inventory/warehouses/create',
+    },
+  },
+  expenses: {
+    root: '/expenses',
+    list: '/expenses/list',
+    create: '/expenses/create',
+    update: (expenseId: string) => `/expenses/update/${expenseId}`,
+    categories: {
+      root: '/expenses/categories',
+      list: '/expenses/categories/list',
+    },
+  },
+  reports: {
+    root: '/reports',
+    sales: '/reports/sales',
+    purchases: '/reports/purchases',
+    inventory: '/reports/inventory',
+    customers: '/reports/customers',
+    suppliers: '/reports/suppliers',
+    profit: '/reports/profit-loss',
+    expenses: '/reports/expenses',
+    tax: '/reports/tax',
+  },
+  users: {
+    root: '/users',
+    list: '/users/list',
+    create: '/users/create',
+    update: (userId: string) => `/users/update/${userId}`,
+    roles: {
+      root: '/users/roles',
+      list: '/users/roles/list',
+      create: '/users/roles/create',
+    },
+  },
+  settings: {
+    root: '/settings',
+    general: '/settings/general',
+    company: '/settings/company',
+    payment: '/settings/payment',
+    tax: '/settings/tax',
+    notifications: '/settings/notifications',
+    backup: '/settings/backup',
   },
   user: {
     profile: {
@@ -60,7 +152,10 @@ export const securedPaths = [];
 
 export function pathToUrl(path: string): string {
   path = path.startsWith('/') ? path : `/${path}`;
-  return `${location?.origin}${path}`;
+  if (typeof window === 'undefined') {
+    return path;
+  }
+  return `${window.location.origin}${path}`;
 }
 
 export function getAllStaticPaths(obj: Record<string, any>) {

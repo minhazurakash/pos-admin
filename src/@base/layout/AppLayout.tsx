@@ -1,4 +1,3 @@
-import { ImagePaths } from '@lib/constant/imagePaths';
 import { Paths } from '@lib/constant/paths';
 import { localStorageState } from '@lib/constant/storage';
 import useLocalStorage from '@lib/hooks/useLocalStorage';
@@ -77,14 +76,17 @@ const AppLayout: React.FC<IFProps> = ({ children }) => {
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <Layout.Header style={styles.header} ref={headerRef}>
-        <Link href={Paths.root} className="block">
-          <img
-            className="logo"
-            src={isLight ? ImagePaths.logo : ImagePaths.logoLight}
-            style={{ width: 120 }}
-            alt="logo"
-          />
-        </Link>
+        <div className="flex w-62 items-center justify-center pt-5">
+          <Link href={Paths.root} className="block">
+            <img
+              className="logo"
+              src={'https://www.standard-accounts.com/img?file=SPROD-POS-logo.png'}
+              // src={isLight ? ImagePaths.logo : ImagePaths.logoLight}
+              style={{ width: 120 }}
+              alt="logo"
+            />
+          </Link>
+        </div>
         <Button
           type="text"
           size="large"
@@ -130,10 +132,7 @@ const AppLayout: React.FC<IFProps> = ({ children }) => {
           </div>
         </Layout.Content>
         <Layout.Footer style={styles.footer} ref={footerRef}>
-          Made With ❤️ By{' '}
-          <a href="https://uniclienttechnologies.com" target="_blank" className="text-blue-500">
-            Uniclient Technologies
-          </a>
+          Made With ❤️ By Akash
         </Layout.Footer>
       </Layout>
     </Layout>

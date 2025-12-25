@@ -1,5 +1,5 @@
+import { UserService } from '@/@modules/user/lib/service';
 import { MutationConfig, QueryConfig, queryClient } from '@lib/config/react-query/react-query';
-import { UserService } from '@modules/user/lib/service';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { AuthService } from './service';
 
