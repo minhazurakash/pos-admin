@@ -1,53 +1,38 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useRouter } from 'next/router';
+import { useCreateCompany } from '@/@modules/company/lib/hooks';
+import { usePlans } from '@/@modules/plan/components/lib/hooks';
 import { Button } from '@/components/landing/Button';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 
 interface FormData {
   companyName: string;
-  fullName: string;
-  email: string;
-  phone: string;
-  package: string;
+  ownerName: string;
+  ownerEmail: string;
+  ownerPhoneNumber: string;
+  planId: string;
 }
 
 export default function Onboarding() {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
-  const [progress, setProgress] = useState(0);
   const [formData, setFormData] = useState<FormData>({
     companyName: '',
-    fullName: '',
-    email: '',
-    phone: '',
-    package: 'free',
+    ownerName: '',
+    ownerEmail: '',
+    ownerPhoneNumber: '',
+    planId: null,
   });
 
-  // Get package from URL query params
+  // Get planId from URL query params
   useEffect(() => {
-    if (router.query.package) {
+    if (router.query.planId) {
       setFormData((prev) => ({
         ...prev,
-        package: router.query.package as string,
+        planId: router.query.planId as string,
       }));
     }
-  }, [router.query.package]);
-
-  useEffect(() => {
-    if (isLoading) {
-      const interval = setInterval(() => {
-        setProgress((prev) => {
-          if (prev >= 100) {
-            clearInterval(interval);
-            return 100;
-          }
-          return prev + 2;
-        });
-      }, 100);
-      return () => clearInterval(interval);
-    }
-  }, [isLoading]);
+  }, [router.query.planId]);
 
   const updateFormData = (field: keyof FormData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -65,46 +50,48 @@ export default function Onboarding() {
     }
   };
 
+  const planQuery = usePlans({
+    options: {
+      page: 1,
+      limit: 10,
+      isActive: true,
+    },
+  });
+  const createCompanyFn = useCreateCompany({
+    config: {
+      onSuccess: (res) => {
+        console.log(res);
+        if (res?.success) {
+          router.push(`/preview?ownerEmail=${formData.ownerEmail.toLowerCase()}`);
+        }
+      },
+    },
+  });
+
   const handleSubmit = async () => {
-    setIsLoading(true);
-
-    // Simulate setup process
-    await new Promise((resolve) => setTimeout(resolve, 5000));
-
-    // Navigate to dashboard
-    router.push('/dashboard');
+    createCompanyFn.mutate({
+      ...formData,
+      ownerEmail: formData.ownerEmail.toLowerCase(),
+      planId: formData.planId,
+    });
   };
 
-  const packages = [
-    {
-      id: 'free',
-      name: 'Free',
-      description: 'Perfect for testing',
-      icon: '🎁',
-      color: 'from-gray-400 to-gray-600',
-    },
-    {
-      id: 'basic',
-      name: 'Basic',
-      description: '৳499/month',
-      icon: '📦',
-      color: 'from-blue-400 to-blue-600',
-    },
-    {
-      id: 'standard',
-      name: 'Standard',
-      description: '৳799/month',
-      icon: '⭐',
-      color: 'from-purple-400 to-purple-600',
-    },
-    {
-      id: 'premium',
-      name: 'Premium',
-      description: '৳999/month',
-      icon: '👑',
-      color: 'from-amber-400 to-amber-600',
-    },
-  ];
+  const packages = planQuery.data?.data?.sort((a, b) => a?.price - b?.price) || [];
+
+  // Generate consistent colors for each plan based on index
+  const getColorForIndex = (index: number) => {
+    const colors = [
+      'from-blue-500 to-blue-600',
+      'from-purple-500 to-purple-600',
+      'from-pink-500 to-pink-600',
+      'from-indigo-500 to-indigo-600',
+      'from-violet-500 to-violet-600',
+      'from-fuchsia-500 to-fuchsia-600',
+      'from-cyan-500 to-cyan-600',
+      'from-teal-500 to-teal-600',
+    ];
+    return colors[index % colors.length];
+  };
 
   const isStepValid = () => {
     switch (currentStep) {
@@ -112,118 +99,36 @@ export default function Onboarding() {
         return formData.companyName.trim().length > 0;
       case 2:
         return (
-          formData.fullName.trim().length > 0 && formData.email.trim().length > 0 && formData.phone.trim().length > 0
+          formData.ownerName.trim().length > 0 &&
+          formData.ownerEmail.trim().length > 0 &&
+          formData.ownerPhoneNumber.trim().length > 0
         );
       case 3:
-        return formData.package.length > 0;
+        return !!formData.planId;
       default:
         return false;
     }
   };
 
-  const stepTitles = ['Company Info', 'Your Details', 'Choose Plan'];
+  const stepTitles = ['Company Info', 'Owner Details', 'Choose Plan'];
   const stepDescriptions = [
     'Tell us about your business',
     'We need to know who you are',
     'Select the perfect plan for you',
   ];
 
-  // Loading Screen with enhanced animations
-  if (isLoading) {
-    return (
-      <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-linear-to-br from-blue-600 via-indigo-600 to-purple-600">
-        {/* Animated background particles */}
-        {[...Array(20)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute h-2 w-2 rounded-full bg-white"
-            initial={{
-              x: Math.random() * 1920,
-              y: Math.random() * 1000,
-              opacity: Math.random() * 0.5,
-            }}
-            animate={{
-              y: [null, Math.random() * 1000],
-              opacity: [null, 0],
-            }}
-            transition={{
-              duration: Math.random() * 3 + 2,
-              repeat: Infinity,
-              ease: 'linear',
-            }}
-          />
-        ))}
-
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5 }}
-          className="relative z-10 text-center"
-        >
-          {/* Glowing spinner */}
-          <div className="relative mx-auto mb-8 h-32 w-32">
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
-              className="absolute inset-0 rounded-full border-8 border-transparent border-t-white shadow-lg shadow-white/50"
-            />
-            <motion.div
-              animate={{ rotate: -360 }}
-              transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
-              className="absolute inset-2 rounded-full border-4 border-transparent border-t-blue-200"
-            />
-            <motion.div
-              animate={{ scale: [1, 1.2, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
-              className="absolute inset-0 flex items-center justify-center text-4xl"
-            >
-              🚀
-            </motion.div>
-          </div>
-
-          <motion.h2
-            animate={{ opacity: [0.5, 1, 0.5] }}
-            transition={{ duration: 2, repeat: Infinity }}
-            className="mb-6 text-3xl font-bold text-white md:text-4xl"
-          >
-            Setting up your POS...
-          </motion.h2>
-
-          {/* Progress bar */}
-          <div className="mx-auto w-80 overflow-hidden rounded-full bg-white/20 p-1 backdrop-blur-sm">
-            <motion.div
-              className="h-3 rounded-full bg-linear-to-r from-white to-blue-200 shadow-lg"
-              initial={{ width: 0 }}
-              animate={{ width: `${progress}%` }}
-              transition={{ duration: 0.3 }}
-            />
-          </div>
-          <motion.p
-            className="mt-4 text-lg text-white/90"
-            animate={{ opacity: [0.7, 1, 0.7] }}
-            transition={{ duration: 1.5, repeat: Infinity }}
-          >
-            {progress}% Complete
-          </motion.p>
-          <motion.div
-            initial={{ width: 0 }}
-            animate={{ width: '100%' }}
-            transition={{ duration: 5 }}
-            className="mx-auto mt-8 h-2 max-w-md overflow-hidden rounded-full bg-white"
-          >
-            <motion.div
-              animate={{ x: ['-100%', '100%'] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
-              className="h-full w-1/3 bg-blue-200"
-            />
-          </motion.div>
-        </motion.div>
-      </div>
-    );
-  }
-
   return (
     <div className="relative min-h-screen overflow-hidden bg-linear-to-br from-indigo-50 via-purple-50 to-pink-50 px-4 py-12">
+      {/* Simple Loading Overlay */}
+      {createCompanyFn.isPending && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="flex flex-col items-center gap-4 rounded-2xl bg-white p-8 shadow-2xl">
+            <div className="h-12 w-12 animate-spin rounded-full border-4 border-gray-200 border-t-blue-600"></div>
+            <p className="text-lg font-semibold text-gray-900">Setting up your company...</p>
+          </div>
+        </div>
+      )}
+
       {/* Animated background elements */}
       <motion.div
         animate={{
@@ -428,7 +333,7 @@ export default function Onboarding() {
                   >
                     <div className="mb-4 flex items-center gap-2">
                       <div className="rounded-xl bg-purple-100 p-2 text-xl">👤</div>
-                      <h2 className="text-2xl font-bold text-gray-900">Your Details</h2>
+                      <h2 className="text-2xl font-bold text-gray-900">Owner Details</h2>
                     </div>
                     <p className="mb-6 text-sm text-gray-600">We need to know who you are</p>
                   </motion.div>
@@ -446,8 +351,8 @@ export default function Onboarding() {
                         <div className="absolute inset-0 rounded-xl bg-linear-to-r from-purple-500 to-pink-500 opacity-0 blur transition-opacity group-focus-within:opacity-20" />
                         <input
                           type="text"
-                          value={formData.fullName}
-                          onChange={(e) => updateFormData('fullName', e.target.value)}
+                          value={formData.ownerName}
+                          onChange={(e) => updateFormData('ownerName', e.target.value)}
                           className="relative w-full rounded-xl border-2 border-gray-200 bg-white/50 px-5 py-4 text-lg text-gray-900 backdrop-blur-sm transition-all focus:border-purple-500 focus:bg-white focus:ring-4 focus:ring-purple-500/20 focus:outline-none"
                           placeholder="e.g., John Doe"
                         />
@@ -466,8 +371,8 @@ export default function Onboarding() {
                         <div className="absolute inset-0 rounded-xl bg-linear-to-r from-purple-500 to-pink-500 opacity-0 blur transition-opacity group-focus-within:opacity-20" />
                         <input
                           type="email"
-                          value={formData.email}
-                          onChange={(e) => updateFormData('email', e.target.value)}
+                          value={formData.ownerEmail}
+                          onChange={(e) => updateFormData('ownerEmail', e.target.value)}
                           className="relative w-full rounded-xl border-2 border-gray-200 bg-white/50 px-5 py-4 text-lg text-gray-900 backdrop-blur-sm transition-all focus:border-purple-500 focus:bg-white focus:ring-4 focus:ring-purple-500/20 focus:outline-none"
                           placeholder="e.g., john@company.com"
                         />
@@ -486,8 +391,8 @@ export default function Onboarding() {
                         <div className="absolute inset-0 rounded-xl bg-linear-to-r from-purple-500 to-pink-500 opacity-0 blur transition-opacity group-focus-within:opacity-20" />
                         <input
                           type="tel"
-                          value={formData.phone}
-                          onChange={(e) => updateFormData('phone', e.target.value)}
+                          value={formData.ownerPhoneNumber}
+                          onChange={(e) => updateFormData('ownerPhoneNumber', e.target.value)}
                           className="relative w-full rounded-xl border-2 border-gray-200 bg-white/50 px-5 py-4 text-lg text-gray-900 backdrop-blur-sm transition-all focus:border-purple-500 focus:bg-white focus:ring-4 focus:ring-purple-500/20 focus:outline-none"
                           placeholder="e.g., +880 1234 567890"
                         />
@@ -515,57 +420,93 @@ export default function Onboarding() {
                       <div className="rounded-xl bg-amber-100 p-2 text-xl">🎯</div>
                       <h2 className="text-2xl font-bold text-gray-900">Choose Your Plan</h2>
                     </div>
-                    <p className="mb-6 text-sm text-gray-600">Select the perfect package for your business needs</p>
+                    <p className="mb-6 text-sm text-gray-600">Select the perfect planId for your business needs</p>
                   </motion.div>
 
-                  <div className="grid gap-3 md:grid-cols-2">
+                  <div className="grid gap-4 md:grid-cols-2">
                     {packages.map((pkg, index) => (
                       <motion.div
                         key={pkg.id}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.3 + index * 0.1 }}
-                        whileHover={{ scale: 1.03, y: -5 }}
+                        whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
-                        onClick={() => updateFormData('package', pkg.id)}
-                        className={`group relative cursor-pointer overflow-hidden rounded-2xl border-2 p-6 transition-all ${
-                          formData.package === pkg.id
-                            ? 'border-blue-500 bg-linear-to-br from-blue-50 to-purple-50 shadow-xl shadow-blue-500/20'
-                            : 'border-gray-200 bg-white/50 hover:border-gray-300 hover:shadow-lg'
+                        onClick={() => updateFormData('planId', pkg.id)}
+                        className={`group relative cursor-pointer overflow-hidden rounded-2xl border-2 transition-all ${
+                          formData.planId === pkg.id
+                            ? 'border-transparent shadow-2xl'
+                            : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg'
                         }`}
                       >
-                        {/* Gradient background effect */}
-                        {formData.package === pkg.id && (
-                          <motion.div
-                            layoutId="selected-package"
-                            className={`absolute inset-0 bg-linear-to-br ${pkg.color} opacity-10`}
-                            transition={{ type: 'spring', duration: 0.6 }}
-                          />
-                        )}
+                        {/* Gradient background for selected */}
+                        <div
+                          className={`absolute inset-0 bg-gradient-to-br ${getColorForIndex(index)} transition-opacity ${
+                            formData.planId === pkg.id ? 'opacity-100' : 'opacity-0'
+                          }`}
+                        />
 
-                        <div className="relative z-10">
-                          <div className="mb-4 flex items-center justify-between">
-                            <span className="text-4xl">{pkg.icon}</span>
+                        {/* Content */}
+                        <div className="relative z-10 p-6">
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <h3
+                                className={`text-2xl font-bold transition-colors ${
+                                  formData.planId === pkg.id ? 'text-white' : 'text-gray-900'
+                                }`}
+                              >
+                                {pkg.name}
+                              </h3>
+                              <p
+                                className={`mt-2 text-sm transition-colors ${
+                                  formData.planId === pkg.id ? 'text-white/90' : 'text-gray-600'
+                                }`}
+                              >
+                                {pkg.description || 'Standard plan features'}
+                              </p>
+                            </div>
+
+                            {/* Checkmark icon */}
                             <motion.div
                               animate={{
-                                scale: formData.package === pkg.id ? 1 : 0,
-                                opacity: formData.package === pkg.id ? 1 : 0,
+                                scale: formData.planId === pkg.id ? 1 : 0,
+                                opacity: formData.planId === pkg.id ? 1 : 0,
                               }}
-                              className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-500"
+                              className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm"
                             >
-                              <svg className="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <svg className="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                               </svg>
                             </motion.div>
                           </div>
-                          <h3 className="mb-2 text-2xl font-bold text-gray-900">{pkg.name}</h3>
-                          <p className="text-lg font-medium text-gray-600">{pkg.description}</p>
+
+                          {/* Price or features */}
+                          {pkg.price !== undefined && (
+                            <div className="mt-4 border-t border-white/20 pt-4">
+                              <p
+                                className={`text-3xl font-bold transition-colors ${
+                                  formData.planId === pkg.id ? 'text-white' : 'text-gray-900'
+                                }`}
+                              >
+                                {pkg.price === 0 ? 'Free' : `৳${pkg.price}`}
+                                <span
+                                  className={`text-sm font-normal transition-colors ${
+                                    formData.planId === pkg.id ? 'text-white/80' : 'text-gray-500'
+                                  }`}
+                                >
+                                  {pkg.price > 0 && '/month'}
+                                </span>
+                              </p>
+                            </div>
+                          )}
                         </div>
 
-                        {/* Hover glow effect */}
-                        <div
-                          className={`absolute inset-0 bg-linear-to-br ${pkg.color} opacity-0 blur-xl transition-opacity group-hover:opacity-20`}
-                        />
+                        {/* Hover gradient effect for non-selected */}
+                        {formData.planId !== pkg.id && (
+                          <div
+                            className={`absolute inset-0 bg-gradient-to-br ${getColorForIndex(index)} opacity-0 transition-opacity group-hover:opacity-5`}
+                          />
+                        )}
                       </motion.div>
                     ))}
                   </div>
@@ -590,7 +531,12 @@ export default function Onboarding() {
                   Next
                 </Button>
               ) : (
-                <Button onClick={handleSubmit} disabled={!isStepValid()} size="lg" className="flex-1">
+                <Button
+                  onClick={handleSubmit}
+                  disabled={!isStepValid() || !formData.planId}
+                  size="lg"
+                  className="flex-1"
+                >
                   Complete Setup
                 </Button>
               )}

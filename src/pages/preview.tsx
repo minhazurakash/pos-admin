@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/router';
+import { useState } from 'react';
 
 export default function Dashboard() {
   const router = useRouter();
@@ -9,8 +9,8 @@ export default function Dashboard() {
   // Auto-generated credentials (in real app, these would come from backend)
   const credentials = {
     panelUrl: 'https://pos.yourcompany.com/admin',
-    email: 'admin@yourcompany.com',
-    password: 'TempPass@2025',
+    email: router?.query?.ownerEmail || '',
+    password: '123456',
   };
 
   const copyToClipboard = (text: string, field: string) => {
@@ -184,7 +184,7 @@ export default function Dashboard() {
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      onClick={() => copyToClipboard(credentials.email, 'email')}
+                      onClick={() => copyToClipboard(credentials.email as string, 'email')}
                       className="rounded-lg bg-purple-500 px-4 py-3 text-white shadow-lg transition-all hover:bg-purple-600"
                     >
                       {copiedField === 'email' ? '✓' : '📋'}

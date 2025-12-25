@@ -1,4 +1,3 @@
-import { IUser } from '@modules/user/lib/interfaces';
 import { TablePaginationConfig } from 'antd';
 export interface IBaseFilter {
   query?: string;
@@ -34,8 +33,8 @@ export interface IBaseEntity {
   id: string;
   isActive: boolean;
   organization: string;
-  createdBy: IUser;
-  updatedBy: IUser;
+  createdBy: any;
+  updatedBy: any;
   deletedBy: any;
   createdAt: string;
   updatedAt: string;
