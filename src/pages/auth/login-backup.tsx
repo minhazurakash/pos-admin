@@ -8,7 +8,7 @@ import { storage } from '@lib/utils/storage';
 import { identifierKey, otpHashKey } from '@modules/auth/lib/constants';
 import { useLogin } from '@modules/auth/lib/hooks';
 import { setAuthSession } from '@modules/auth/lib/utils';
-import { Button, Checkbox, Form, Input, message } from 'antd';
+import { Button, Form, Input, message, Checkbox, Divider } from 'antd';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import type React from 'react';
@@ -32,7 +32,7 @@ const LoginPage: React.FC = () => {
         }
 
         setAuthSession(data?.data);
-        messageApi.loading(apiMessages.login, 0.3).then(() => (window.location.href = decodeURIComponent(callbackUrl)));
+        messageApi.loading(apiMessages.login, 1).then(() => (window.location.href = decodeURIComponent(callbackUrl)));
       },
     },
   });
@@ -55,9 +55,7 @@ const LoginPage: React.FC = () => {
         <div
           className="absolute -top-40 -right-40 h-96 w-96 animate-pulse rounded-full opacity-30"
           style={{
-            background: isLight
-              ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-              : 'linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%)',
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
             filter: 'blur(80px)',
             animation: 'pulse 4s ease-in-out infinite',
           }}
@@ -65,18 +63,14 @@ const LoginPage: React.FC = () => {
         <div
           className="absolute top-1/4 left-10 h-72 w-72 rounded-full opacity-20"
           style={{
-            background: isLight
-              ? 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)'
-              : 'linear-gradient(135deg, #ec4899 0%, #f43f5e 100%)',
+            background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
             filter: 'blur(70px)',
           }}
         />
         <div
           className="absolute -bottom-32 -left-32 h-80 w-80 animate-pulse rounded-full opacity-25"
           style={{
-            background: isLight
-              ? 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)'
-              : 'linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)',
+            background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
             filter: 'blur(90px)',
             animation: 'pulse 6s ease-in-out infinite',
           }}
@@ -128,92 +122,82 @@ const LoginPage: React.FC = () => {
           </p>
 
           <div className="grid w-full grid-cols-1 gap-6 sm:grid-cols-2">
-            {[
-              {
-                icon: 'M13 10V3L4 14h7v7l9-11h-7z',
-                title: 'Lightning Fast Processing',
-                desc: 'Process transactions in milliseconds',
-                color: 'from-blue-500 to-blue-700',
-              },
-              {
-                icon: 'M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4',
-                title: 'Smart Inventory Control',
-                desc: 'AI-powered stock management',
-                color: 'from-purple-500 to-purple-700',
-              },
-              {
-                icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z',
-                title: 'Advanced Analytics',
-                desc: 'Actionable business intelligence',
-                color: 'from-pink-500 to-pink-700',
-              },
-              {
-                icon: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8v8m0 0l-3-3m3 3l3-3',
-                title: 'Seamless Integrations',
-                desc: 'Connect with your favorite tools',
-                color: 'from-green-500 to-green-700',
-              },
-            ].map((feature, idx) => (
-              <div
-                key={idx}
-                className="flex cursor-pointer items-start gap-4 rounded-xl p-4 backdrop-blur-sm transition-all"
-                style={{
-                  backgroundColor: isLight ? 'rgba(255, 255, 255, 0.5)' : 'rgba(51, 65, 85, 0.4)',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = isLight
-                    ? 'rgba(255, 255, 255, 0.7)'
-                    : 'rgba(71, 85, 105, 0.5)';
-                  e.currentTarget.style.transform = 'translateY(-2px)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = isLight
-                    ? 'rgba(255, 255, 255, 0.5)'
-                    : 'rgba(51, 65, 85, 0.4)';
-                  e.currentTarget.style.transform = 'translateY(0)';
-                }}
-              >
-                <div
-                  className={`flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br ${feature.color} shadow-lg`}
-                >
-                  <svg className="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={feature.icon} />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="mb-1 font-bold" style={{ color: isLight ? '#111827' : '#f8fafc' }}>
-                    {feature.title}
-                  </h3>
-                  <p className="text-sm" style={{ color: isLight ? '#4b5563' : '#cbd5e1' }}>
-                    {feature.desc}
-                  </p>
-                </div>
+            <div className="flex items-start gap-4 rounded-xl bg-white/40 p-4 backdrop-blur-sm transition-all hover:bg-white/60 dark:bg-white/5 dark:hover:bg-white/10">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 shadow-lg">
+                <svg className="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
               </div>
-            ))}
+              <div>
+                <h3 className="mb-1 font-bold" style={{ color: isLight ? '#111827' : '#f8fafc' }}>
+                  Lightning Fast Processing
+                </h3>
+                <p className="text-sm" style={{ color: isLight ? '#4b5563' : '#cbd5e1' }}>
+                  Process transactions in milliseconds
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-4 rounded-xl bg-white/40 p-4 backdrop-blur-sm transition-all hover:bg-white/60 dark:bg-white/5 dark:hover:bg-white/10">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500 to-purple-700 shadow-lg">
+                <svg className="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+                  />
+                </svg>
+              </div>
+              <div>
+                <h3 className="mb-1 font-bold text-gray-900 dark:text-white">Smart Inventory Control</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400">AI-powered stock management</p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-4 rounded-xl bg-white/40 p-4 backdrop-blur-sm transition-all hover:bg-white/60 dark:bg-white/5 dark:hover:bg-white/10">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-pink-500 to-pink-700 shadow-lg">
+                <svg className="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                  />
+                </svg>
+              </div>
+              <div>
+                <h3 className="mb-1 font-bold text-gray-900 dark:text-white">Advanced Analytics</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Actionable business intelligence</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-4 rounded-xl bg-white/40 p-4 backdrop-blur-sm transition-all hover:bg-white/60 dark:bg-white/5 dark:hover:bg-white/10">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-green-500 to-green-700 shadow-lg">
+                <svg className="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8v8m0 0l-3-3m3 3l3-3"
+                  />
+                </svg>
+              </div>
+              <div>
+                <h3 className="mb-1 font-bold text-gray-900 dark:text-white">Seamless Integrations</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Connect with your favorite tools</p>
+              </div>
+            </div>
           </div>
 
           <div className="mt-10 flex w-full items-center justify-center gap-4">
             <div className="flex -space-x-2">
-              <div
-                className="h-10 w-10 rounded-full border-2 bg-gradient-to-br from-blue-400 to-blue-600"
-                style={{ borderColor: isLight ? '#ffffff' : '#1e293b' }}
-              />
-              <div
-                className="h-10 w-10 rounded-full border-2 bg-gradient-to-br from-purple-400 to-purple-600"
-                style={{ borderColor: isLight ? '#ffffff' : '#1e293b' }}
-              />
-              <div
-                className="h-10 w-10 rounded-full border-2 bg-gradient-to-br from-pink-400 to-pink-600"
-                style={{ borderColor: isLight ? '#ffffff' : '#1e293b' }}
-              />
+              <div className="h-10 w-10 rounded-full border-2 border-white bg-gradient-to-br from-blue-400 to-blue-600" />
+              <div className="h-10 w-10 rounded-full border-2 border-white bg-gradient-to-br from-purple-400 to-purple-600" />
+              <div className="h-10 w-10 rounded-full border-2 border-white bg-gradient-to-br from-pink-400 to-pink-600" />
             </div>
             <div>
-              <p className="text-sm font-semibold" style={{ color: isLight ? '#111827' : '#f1f5f9' }}>
-                Trusted by 10,000+ businesses
-              </p>
-              <p className="text-xs" style={{ color: isLight ? '#6b7280' : '#94a3b8' }}>
-                Join the retail revolution today
-              </p>
+              <p className="text-sm font-semibold text-gray-900 dark:text-white">Trusted by 10,000+ businesses</p>
+              <p className="text-xs text-gray-600 dark:text-gray-400">Join the retail revolution today</p>
             </div>
           </div>
         </div>
@@ -265,13 +249,12 @@ const LoginPage: React.FC = () => {
                 rules={[{ required: true, type: 'email', message: 'Please enter a valid email' }]}
               >
                 <Input
-                  prefix={<MailOutlined style={{ color: isLight ? '#9ca3af' : '#6b7280' }} />}
+                  prefix={<MailOutlined className="text-gray-400" />}
                   placeholder="Enter your email"
                   size="large"
-                  className="rounded-xl border-0 px-4 shadow-sm transition-all hover:shadow-md focus:shadow-md"
+                  className="rounded-xl border-0 px-4 shadow-sm transition-all hover:shadow-md focus:shadow-md dark:text-white"
                   style={{
                     background: isLight ? '#f8fafc' : '#1e293b',
-                    color: isLight ? '#0f172a' : '#f1f5f9',
                     height: '48px',
                   }}
                 />
@@ -279,13 +262,12 @@ const LoginPage: React.FC = () => {
 
               <Form.Item name="password" rules={[{ required: true, message: 'Please enter your password' }]}>
                 <Input.Password
-                  prefix={<LockOutlined style={{ color: isLight ? '#9ca3af' : '#6b7280' }} />}
+                  prefix={<LockOutlined className="text-gray-400" />}
                   placeholder="Enter your password"
                   size="large"
-                  className="rounded-xl border-0 px-4 shadow-sm transition-all hover:shadow-md focus:shadow-md"
+                  className="rounded-xl border-0 px-4 shadow-sm transition-all hover:shadow-md focus:shadow-md dark:text-white"
                   style={{
                     background: isLight ? '#f8fafc' : '#1e293b',
-                    color: isLight ? '#0f172a' : '#f1f5f9',
                     height: '48px',
                   }}
                 />
@@ -297,7 +279,7 @@ const LoginPage: React.FC = () => {
                     Remember me
                   </Checkbox>
                 </Form.Item>
-                {/* <a
+                <a
                   href="#"
                   className="text-sm font-semibold transition-colors"
                   style={{ color: isLight ? '#2563eb' : '#60a5fa' }}
@@ -305,7 +287,7 @@ const LoginPage: React.FC = () => {
                   onMouseLeave={(e) => (e.currentTarget.style.color = isLight ? '#2563eb' : '#60a5fa')}
                 >
                   Forgot password?
-                </a> */}
+                </a>
               </div>
 
               <Form.Item className="mb-0">
@@ -315,7 +297,7 @@ const LoginPage: React.FC = () => {
                   htmlType="submit"
                   block
                   size="large"
-                  className="h-13! rounded-xl font-bold shadow-lg transition-all hover:shadow-xl"
+                  className="h-12 rounded-xl font-bold shadow-lg transition-all hover:shadow-xl"
                   style={{
                     background: isLight
                       ? 'linear-gradient(90deg, #667eea 0%, #764ba2 100%)'
@@ -330,7 +312,7 @@ const LoginPage: React.FC = () => {
 
               <div className="relative my-6">
                 <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t" style={{ borderColor: isLight ? '#d1d5db' : '#475569' }}></div>
+                  <div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
                 </div>
                 <div className="relative flex justify-center text-sm">
                   <span
@@ -347,7 +329,7 @@ const LoginPage: React.FC = () => {
 
               <p className="text-center text-sm">
                 <a
-                  href={'#'}
+                  href={Paths.auth.signup}
                   className="font-bold transition-colors"
                   style={{ color: isLight ? '#9333ea' : '#c084fc' }}
                   onMouseEnter={(e) => (e.currentTarget.style.color = isLight ? '#7e22ce' : '#e9d5ff')}
@@ -359,7 +341,7 @@ const LoginPage: React.FC = () => {
             </Form>
 
             {/* Footer */}
-            <div className="mt-8 border-t pt-6" style={{ borderColor: isLight ? '#e5e7eb' : '#374151' }}>
+            <div className="mt-8 border-t border-gray-200 pt-6 dark:border-gray-700">
               <div className="flex items-center justify-center gap-2">
                 <svg className="h-4 w-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
                   <path
@@ -369,7 +351,7 @@ const LoginPage: React.FC = () => {
                   />
                 </svg>
                 <p className="text-center text-xs font-medium" style={{ color: isLight ? '#4b5563' : '#94a3b8' }}>
-                  Secured and encrypted login
+                  Secured with 256-bit SSL encryption
                 </p>
               </div>
             </div>
