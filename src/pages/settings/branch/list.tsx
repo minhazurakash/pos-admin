@@ -1,7 +1,7 @@
-import ProductCategoryForm from '@/@modules/productCategories/components/ProductCategoryForm';
-import ProductCategoryList from '@/@modules/productCategories/components/ProductCategoryList';
-import { useCreateProductCategory, useProductCategories } from '@/@modules/productCategories/lib/hooks';
-import { IProductCategoryFilter } from '@/@modules/productCategories/lib/interfaces';
+import BranchForm from '@/@modules/settings/branch/components/BranchForm';
+import BranchList from '@/@modules/settings/branch/components/BranchList';
+import { useBranches, useCreateBranch } from '@/@modules/settings/branch/lib/hooks';
+import { IBranchFilter } from '@/@modules/settings/branch/lib/interfaces';
 import BaseSearchTerm from '@base/components/BaseSearchTerm';
 import PageHeader from '@base/components/PageHeader';
 import PageWrapper from '@base/container/PageWrapper';
@@ -13,15 +13,15 @@ import { Button, Form, Modal, Tag, message } from 'antd';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 
-const ProductCategoryPage = () => {
+const BranchPagePage = () => {
   const router = useRouter();
   const [createFormInstance] = Form.useForm();
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const [messageApi, msgCtx] = message.useMessage();
 
-  const { page = 1, limit = 10, ...rest }: IProductCategoryFilter = $$.parseQueryParams(router.asPath);
+  const { page = 1, limit = 2, ...rest }: IBranchFilter = $$.parseQueryParams(router.asPath);
 
-  const { isLoading, data } = useProductCategories({
+  const { isLoading, data } = useBranches({
     options: {
       ...rest,
       page,
@@ -30,7 +30,7 @@ const ProductCategoryPage = () => {
   });
 
   //  create functionalities
-  const createProductCategory = useCreateProductCategory({
+  const createBranch = useCreateBranch({
     config: {
       onSuccess: (res) => {
         if (!res?.success) return;
@@ -42,10 +42,10 @@ const ProductCategoryPage = () => {
   });
 
   return (
-    <PageWrapper title="Product Categories">
+    <PageWrapper title="Branches">
       {msgCtx}
       <PageHeader
-        title="Product Categories List"
+        title="Branches List"
         subTitle={<BaseSearchTerm />}
         tags={<Tag color="blue">Total items: {data?.meta?.total || 0}</Tag>}
         extra={[
@@ -57,10 +57,10 @@ const ProductCategoryPage = () => {
         ]}
       />
 
-      <ProductCategoryList
-        size="small"
+      <BranchList
         data={data?.data}
         loading={isLoading}
+        size="small"
         pagination={{
           total: data?.meta?.total,
           current: Number(page),
@@ -82,17 +82,17 @@ const ProductCategoryPage = () => {
         destroyOnHidden
         footer={null}
       >
-        <ProductCategoryForm
+        <BranchForm
           form={createFormInstance}
           fromType="create"
           initialValues={{ isActive: true }}
-          loading={createProductCategory?.isPending}
-          onFinish={(values) => createProductCategory?.mutateAsync(values)}
+          loading={createBranch?.isPending}
+          onFinish={(values) => createBranch?.mutateAsync(values)}
         />
       </Modal>
     </PageWrapper>
   );
 };
-export default WithAuthorization(ProductCategoryPage, {
+export default WithAuthorization(BranchPagePage, {
   allowedAccess: [],
 });

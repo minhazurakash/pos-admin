@@ -6,7 +6,7 @@ import { useDeleteProduct, useUpdateProduct } from '../lib/hooks';
 import { IProduct } from '../lib/interfaces';
 import ProductForm from './ProductForm';
 
-interface IProps extends TableProps {
+interface IProps extends Omit<TableProps, 'dataSource' | 'columns' | 'rowKey'> {
   data: IProduct[] | undefined;
 }
 

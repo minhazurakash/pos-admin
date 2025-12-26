@@ -23,7 +23,7 @@ const PageWrapper: React.FC<IProps> = ({ children, ...customMeta }) => {
 
   const meta: IMeta = {
     title: '',
-    baseTitle: '',
+    baseTitle: 'POS Admin',
     description: ``,
     // image: ogImageUrl,
     url: `http://localhost:4080${router.asPath}`,

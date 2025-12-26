@@ -263,8 +263,8 @@ const MainMenu: React.FC<IProps> = ({ openedMenuKeys, onOpenChange, defaultSelec
               icon: <FaCog size={14} />,
             },
             {
-              key: Paths.settings.company,
-              label: <Link href={Paths.settings.company}>Company</Link>,
+              key: Paths.settings.branch,
+              label: <Link href={Paths.settings.branch}>Branch</Link>,
               icon: <FaCog size={14} />,
             },
             {

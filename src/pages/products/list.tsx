@@ -46,6 +46,7 @@ const ProductPage = () => {
       />
 
       <ProductList
+        size="small"
         data={data?.data}
         loading={isLoading}
         pagination={{

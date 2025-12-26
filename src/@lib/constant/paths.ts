@@ -129,7 +129,7 @@ export const Paths = {
   settings: {
     root: '/settings',
     general: '/settings/general',
-    company: '/settings/company',
+    branch: '/settings/branch/list',
     payment: '/settings/payment',
     tax: '/settings/tax',
     notifications: '/settings/notifications',
