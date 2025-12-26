@@ -45,7 +45,6 @@ const WelcomeMenu: React.FC<IProps> = () => {
       dropdownRender={() => {
         return (
           <div className="min-w-36 rounded-lg border border-gray-100 bg-white p-4 shadow-sm dark:bg-black">
-            {/* <p className="text-xs font-medium text-gray-500 dark:text-gray-400">Welcome to Wage Provider</p> */}
             <p className="font-semibold">{accessToken?.user?.fullName}</p>
             <ul className="mt-4 flex flex-col gap-2 border-t border-t-gray-100 pt-4">
               {items.map((item) => (

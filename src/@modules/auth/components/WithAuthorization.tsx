@@ -26,7 +26,7 @@ const WithAuthorization = <P extends object>(
   const AuthorizationComponent: React.FC<P> = (props) => {
     const hasAccess: boolean = hasAccessPermission(allowedAccess);
 
-    if (!hasAccess) return fallBack;
+    if (hasAccess) return fallBack;
 
     // Render the wrapped component if the user has the given access
     return <WrappedComponent {...props} />;

@@ -16,7 +16,7 @@ const Authorization: React.FC<IProps> = ({
   const hasAccess: boolean = hasAccessPermission(allowedAccess, superAdminAllowed);
 
   // return children;
-  return hasAccess ? children : fallBack;
+  return !hasAccess ? children : fallBack;
 };
 
 export default Authorization;

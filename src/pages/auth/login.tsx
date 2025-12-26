@@ -23,7 +23,10 @@ const LoginPage: React.FC = () => {
   const loginFn = useLogin({
     config: {
       onSuccess(data) {
-        if (!data?.success) return;
+        if (!data?.success) {
+          messageApi.error(data?.message || 'Login failed. Please try again.');
+          return;
+        }
         if (data.data?.isVerified === false) {
           storage.setData(otpHashKey, data?.data?.hash);
           storage.setData(identifierKey, data?.data?.email);
