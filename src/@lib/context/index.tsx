@@ -49,12 +49,19 @@ export const AppProvider = ({ children }: AppProviderProps) => {
       screenXXLMin: 1536,
       screenXXL: 1536,
     },
+    components: {
+      Form: {
+        itemMarginBottom: 5,
+      },
+    },
   };
 
   return (
     <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools initialIsOpen={false} />
-      <ConfigProvider theme={theme}>{children}</ConfigProvider>
+      <ConfigProvider theme={theme} componentSize="middle">
+        {children}
+      </ConfigProvider>
     </QueryClientProvider>
   );
 };

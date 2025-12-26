@@ -1,8 +1,8 @@
 import AccessDeniedFallBack from '@/@base/components/AccessDeniedFallBack';
-import ProductForm from '@/@modules/products/components/ProductForm';
-import ProductList from '@/@modules/products/components/ProductList';
-import { useCreateProduct, useProducts } from '@/@modules/products/lib/hooks';
-import { IProductFilter } from '@/@modules/products/lib/interfaces';
+import ProductCategoryForm from '@/@modules/productCategories/components/ProductCategoryForm';
+import ProductCategoryList from '@/@modules/productCategories/components/ProductCategoryList';
+import { useCreateProductCategory, useProductCategories } from '@/@modules/productCategories/lib/hooks';
+import { IProductCategoryFilter } from '@/@modules/productCategories/lib/interfaces';
 import BaseSearchTerm from '@base/components/BaseSearchTerm';
 import PageHeader from '@base/components/PageHeader';
 import PageWrapper from '@base/container/PageWrapper';
@@ -14,15 +14,15 @@ import { Button, Form, Modal, Tag, message } from 'antd';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 
-const ProductPage = () => {
+const ProductCategoryPage = () => {
   const router = useRouter();
   const [createFormInstance] = Form.useForm();
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const [messageApi, msgCtx] = message.useMessage();
 
-  const { page = 1, limit = 10, ...rest }: IProductFilter = $$.parseQueryParams(router.asPath);
+  const { page = 1, limit = 10, ...rest }: IProductCategoryFilter = $$.parseQueryParams(router.asPath);
 
-  const { isLoading, data } = useProducts({
+  const { isLoading, data } = useProductCategories({
     options: {
       ...rest,
       page,
@@ -31,7 +31,7 @@ const ProductPage = () => {
   });
 
   //  create functionalities
-  const createProduct = useCreateProduct({
+  const createProductCategory = useCreateProductCategory({
     config: {
       onSuccess: (res) => {
         if (!res?.success) return;
@@ -43,10 +43,10 @@ const ProductPage = () => {
   });
 
   return (
-    <PageWrapper title="Products">
+    <PageWrapper title="Product Categories">
       {msgCtx}
       <PageHeader
-        title="Product List"
+        title="Product Categories List"
         subTitle={<BaseSearchTerm />}
         tags={<Tag color="blue">Total items: {data?.meta?.total || 0}</Tag>}
         extra={[
@@ -58,7 +58,7 @@ const ProductPage = () => {
         ]}
       />
 
-      <ProductList
+      <ProductCategoryList
         data={data?.data}
         loading={isLoading}
         pagination={{
@@ -73,26 +73,27 @@ const ProductPage = () => {
       />
 
       <Modal
-        width={900}
-        title="Create New Product"
+        width={500}
+        title="Create New Product Category"
         open={isDrawerOpen}
         onCancel={() => {
           setDrawerOpen(false);
         }}
         destroyOnHidden
+        footer={null}
       >
-        <ProductForm
+        <ProductCategoryForm
           form={createFormInstance}
           fromType="create"
-          initialValues={{ isActive: true, stockQuantity: 0, salePrice: 0 }}
-          loading={createProduct?.isPending}
-          onFinish={(values) => createProduct?.mutateAsync(values)}
+          initialValues={{ isActive: true }}
+          loading={createProductCategory?.isPending}
+          onFinish={(values) => createProductCategory?.mutateAsync(values)}
         />
       </Modal>
     </PageWrapper>
   );
 };
-export default WithAuthorization(ProductPage, {
+export default WithAuthorization(ProductCategoryPage, {
   allowedAccess: [],
   fallBack: <AccessDeniedFallBack />,
 });

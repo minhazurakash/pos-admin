@@ -1,7 +1,7 @@
 import CustomUpload from '@base/components/CustomUpload';
-import { DiscountTypeEnum, IProductCreate, ProductUnitEnum } from '@/@modules/products/lib/interfaces';
 import { Button, Col, Form, FormInstance, Input, InputNumber, Row, Select, Switch } from 'antd';
 import { useEffect } from 'react';
+import { DiscountTypeEnum, IProductCreate, ProductUnitEnum } from '../lib/interfaces';
 
 interface IProps {
   form: FormInstance;

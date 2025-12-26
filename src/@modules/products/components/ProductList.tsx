@@ -1,10 +1,10 @@
 import Authorization from '@modules/auth/components/Authorization';
-import { useDeleteProduct, useUpdateProduct } from '@/@modules/products/lib/hooks';
-import { IProduct } from '@/@modules/products/lib/interfaces';
 import { Button, Drawer, Form, Image, Popconfirm, Switch, Table, TableProps, Tag } from 'antd';
 import { useState } from 'react';
 import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
 import ProductForm from './ProductForm';
+import { IProduct } from '../lib/interfaces';
+import { useDeleteProduct, useUpdateProduct } from '../lib/hooks';
 
 interface IProps extends TableProps {
   data: IProduct[] | undefined;
@@ -110,7 +110,7 @@ const ProductList = ({ data, ...rest }: IProps) => {
         <div className="flex gap-2">
           <Authorization allowedAccess={[]}>
             <Button
-              type="link"
+              type="primary"
               icon={<AiOutlineEdit />}
               onClick={() => {
                 setSelectedProduct(record);
@@ -122,10 +122,10 @@ const ProductList = ({ data, ...rest }: IProps) => {
           <Authorization allowedAccess={[]}>
             <Popconfirm
               title="Delete Product"
-              description="Are you sure you want to delete this product?"
+              description="Are you sure you want to delete?"
               onConfirm={() => deleteProduct.mutate(record.id)}
             >
-              <Button type="link" danger icon={<AiOutlineDelete />} />
+              <Button type="primary" danger icon={<AiOutlineDelete />} />
             </Popconfirm>
           </Authorization>
         </div>

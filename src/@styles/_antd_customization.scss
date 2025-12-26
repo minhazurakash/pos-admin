@@ -1,6 +1,15 @@
-// form gap
+// form gap - compact mode
 .ant-form-item {
-  margin-bottom: 0;
+  margin-bottom: 8px;
+}
+
+// Remove gaps from Row and Col components
+.ant-row {
+  row-gap: 8px !important;
+}
+
+.ant-col {
+  padding-block: 0 !important;
 }
 
 @for $i from 0 through 8 {
