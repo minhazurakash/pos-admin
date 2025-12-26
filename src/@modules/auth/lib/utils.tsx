@@ -207,7 +207,9 @@ export const getPermissions = (): PermissionsTypes[] => {
 export const hasAccessPermission = (allowedAccess: PermissionsTypes[], superAdminAllowed: boolean = true): boolean => {
   if (!ENV.enableRBAC) return true;
   const roles = storage.getData(rolesKey);
-  if (roles?.includes(ENUM_USER_ROLES.SUPER_ADMIN) && superAdminAllowed) return true;
+  const isSuperAdminOrCompanyOwner =
+    roles?.includes(ENUM_USER_ROLES.SUPER_ADMIN) || roles?.includes(ENUM_USER_ROLES.COMPANY_MAIN_OWNER);
+  if (isSuperAdminOrCompanyOwner && superAdminAllowed) return true;
   const userPermissions: PermissionsTypes[] = [...getPermissions(), 'FORBIDDEN'];
   const hasAccess = userPermissions.some((permission) => allowedAccess.includes(permission));
   return hasAccess;

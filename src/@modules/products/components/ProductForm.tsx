@@ -1,3 +1,4 @@
+import { IFormType } from '@/@base/interfaces';
 import CustomUpload from '@base/components/CustomUpload';
 import { Button, Col, Form, FormInstance, Input, InputNumber, Row, Select, Switch } from 'antd';
 import { useEffect } from 'react';
@@ -5,7 +6,7 @@ import { DiscountTypeEnum, IProductCreate, ProductUnitEnum } from '../lib/interf
 
 interface IProps {
   form: FormInstance;
-  fromType: 'create' | 'update';
+  fromType: IFormType;
   initialValues?: Partial<IProductCreate>;
   loading?: boolean;
   onFinish: (values: any) => void;

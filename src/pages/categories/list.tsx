@@ -1,4 +1,3 @@
-import AccessDeniedFallBack from '@/@base/components/AccessDeniedFallBack';
 import ProductCategoryForm from '@/@modules/productCategories/components/ProductCategoryForm';
 import ProductCategoryList from '@/@modules/productCategories/components/ProductCategoryList';
 import { useCreateProductCategory, useProductCategories } from '@/@modules/productCategories/lib/hooks';
@@ -95,5 +94,4 @@ const ProductCategoryPage = () => {
 };
 export default WithAuthorization(ProductCategoryPage, {
   allowedAccess: [],
-  fallBack: <AccessDeniedFallBack />,
 });

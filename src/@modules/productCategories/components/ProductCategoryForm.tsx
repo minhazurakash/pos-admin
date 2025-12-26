@@ -1,9 +1,10 @@
+import { IFormType } from '@/@base/interfaces';
 import { Button, Col, Form, FormInstance, Input, Row, Switch } from 'antd';
 import { IProductCategoryCreate } from '../lib/interfaces';
 
 interface IProps {
   form: FormInstance;
-  fromType: 'create' | 'update';
+  fromType: IFormType;
   initialValues?: Partial<IProductCategoryCreate>;
   loading?: boolean;
   onFinish: (values: any) => void;
@@ -42,13 +43,13 @@ const ProductCategoryForm = ({ form, fromType, initialValues, loading, onFinish 
         </Row>
       </div>
 
-      {/* <div className="mt-5 flex justify-end"> */}
-      <Form.Item>
-        <Button block type="primary" htmlType="submit" loading={loading} size="large">
-          {fromType === 'create' ? 'Create Product Category' : 'Update Product Category'}
-        </Button>
-      </Form.Item>
-      {/* </div> */}
+      <div className="mt-5 flex-col">
+        <Form.Item>
+          <Button block type="primary" htmlType="submit" loading={loading} size="large">
+            {fromType === 'create' ? 'Create Product Category' : 'Update Product Category'}
+          </Button>
+        </Form.Item>
+      </div>
     </Form>
   );
 };

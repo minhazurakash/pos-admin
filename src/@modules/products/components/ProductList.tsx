@@ -1,22 +1,38 @@
 import Authorization from '@modules/auth/components/Authorization';
-import { Button, Drawer, Form, Image, Popconfirm, Switch, Table, TableProps, Tag } from 'antd';
+import { Button, Form, Image, message, Modal, Popconfirm, Switch, Table, TableProps, Tag } from 'antd';
 import { useState } from 'react';
 import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
-import ProductForm from './ProductForm';
-import { IProduct } from '../lib/interfaces';
 import { useDeleteProduct, useUpdateProduct } from '../lib/hooks';
+import { IProduct } from '../lib/interfaces';
+import ProductForm from './ProductForm';
 
 interface IProps extends TableProps {
   data: IProduct[] | undefined;
 }
 
 const ProductList = ({ data, ...rest }: IProps) => {
-  const [isDrawerOpen, setDrawerOpen] = useState(false);
+  const [messageApi, contextHolder] = message.useMessage();
+
   const [selectedProduct, setSelectedProduct] = useState<IProduct | null>(null);
   const [updateFormInstance] = Form.useForm();
 
   const deleteProduct = useDeleteProduct({ config: {} });
-  const updateProduct = useUpdateProduct({ config: {} });
+  const updateProduct = useUpdateProduct({
+    config: {
+      onSuccess: (res) => {
+        if (!res?.success) {
+          messageApi.error(res?.message || 'Failed to update product');
+          return;
+        }
+        messageApi.success(res?.message || 'Product updated successfully');
+        setSelectedProduct(null);
+        updateFormInstance.resetFields();
+      },
+      onError: (error: any) => {
+        messageApi.error(error?.message || 'Failed to update product');
+      },
+    },
+  });
 
   const columns = [
     {
@@ -88,18 +104,19 @@ const ProductList = ({ data, ...rest }: IProps) => {
       render: (location: string) => location || '-',
     },
     {
-      title: 'Active',
+      title: 'Status',
       dataIndex: 'isActive',
       key: 'isActive',
       render: (isActive: boolean, record: IProduct) => (
-        <Authorization allowedAccess={[]}>
-          <Switch
-            checked={isActive}
-            onChange={(checked) => {
-              updateProduct.mutate({ id: record.id, data: { isActive: checked } });
-            }}
-          />
-        </Authorization>
+        <Switch
+          checkedChildren="Active"
+          unCheckedChildren="Inactive"
+          checked={isActive}
+          loading={updateProduct.isPending && updateProduct.variables?.id === record.id}
+          onChange={(status) => {
+            updateProduct.mutate({ id: record.id, data: { isActive: status } });
+          }}
+        />
       ),
     },
     {
@@ -115,7 +132,6 @@ const ProductList = ({ data, ...rest }: IProps) => {
               onClick={() => {
                 setSelectedProduct(record);
                 updateFormInstance.setFieldsValue(record);
-                setDrawerOpen(true);
               }}
             />
           </Authorization>
@@ -135,14 +151,14 @@ const ProductList = ({ data, ...rest }: IProps) => {
 
   return (
     <>
+      {contextHolder}
       <Table columns={columns} dataSource={data} rowKey="id" {...rest} />
 
-      <Drawer
+      <Modal
         width={700}
         title="Update Product"
-        open={isDrawerOpen}
-        onClose={() => {
-          setDrawerOpen(false);
+        open={!!selectedProduct}
+        onCancel={() => {
           setSelectedProduct(null);
           updateFormInstance.resetFields();
         }}
@@ -154,15 +170,11 @@ const ProductList = ({ data, ...rest }: IProps) => {
           loading={updateProduct?.isPending}
           onFinish={(values) => {
             if (selectedProduct) {
-              updateProduct.mutateAsync({ id: selectedProduct.id, data: values }).then(() => {
-                setDrawerOpen(false);
-                setSelectedProduct(null);
-                updateFormInstance.resetFields();
-              });
+              updateProduct.mutateAsync({ id: selectedProduct.id, data: values });
             }
           }}
         />
-      </Drawer>
+      </Modal>
     </>
   );
 };

@@ -12,12 +12,11 @@ interface IProps extends TableProps {
 
 const ProductCategoryList = ({ data, ...rest }: IProps) => {
   const [messageApi, contextHolder] = message.useMessage();
-  const [isDrawerOpen, setDrawerOpen] = useState(false);
   const [selectedProductCategory, setSelectedProductCategory] = useState<IProductCategory | null>(null);
   const [updateFormInstance] = Form.useForm();
 
   const deleteProductCategory = useDeleteProductCategory({ config: {} });
-  const updateProductCategory = useUpdateProductCategory({
+  const updateProductCategoryFn = useUpdateProductCategory({
     config: {
       onSuccess: (res) => {
         if (!res?.success) {
@@ -25,7 +24,6 @@ const ProductCategoryList = ({ data, ...rest }: IProps) => {
           return;
         }
         messageApi.success(res?.message || 'Product category updated successfully');
-        setDrawerOpen(false);
         setSelectedProductCategory(null);
         updateFormInstance.resetFields();
       },
@@ -62,8 +60,9 @@ const ProductCategoryList = ({ data, ...rest }: IProps) => {
           checkedChildren="Active"
           unCheckedChildren="Inactive"
           checked={isActive}
+          loading={updateProductCategoryFn.isPending && updateProductCategoryFn.variables?.id === record.id}
           onChange={(status) => {
-            updateProductCategory.mutate({ id: record.id, data: { isActive: status } });
+            updateProductCategoryFn.mutate({ id: record.id, data: { isActive: status } });
           }}
         />
       ),
@@ -82,7 +81,6 @@ const ProductCategoryList = ({ data, ...rest }: IProps) => {
               onClick={() => {
                 setSelectedProductCategory(record);
                 updateFormInstance.setFieldsValue(record);
-                setDrawerOpen(true);
               }}
             />
           </Authorization>
@@ -107,9 +105,8 @@ const ProductCategoryList = ({ data, ...rest }: IProps) => {
       <Modal
         width={500}
         title="Update Product Category"
-        open={isDrawerOpen}
+        open={!!selectedProductCategory}
         onCancel={() => {
-          setDrawerOpen(false);
           setSelectedProductCategory(null);
           updateFormInstance.resetFields();
         }}
@@ -119,10 +116,10 @@ const ProductCategoryList = ({ data, ...rest }: IProps) => {
         <ProductCategoryForm
           form={updateFormInstance}
           fromType="update"
-          loading={updateProductCategory?.isPending}
+          loading={updateProductCategoryFn?.isPending}
           onFinish={(values) => {
             if (selectedProductCategory) {
-              updateProductCategory.mutateAsync({ id: selectedProductCategory.id, data: values });
+              updateProductCategoryFn.mutateAsync({ id: selectedProductCategory.id, data: values });
             }
           }}
         />

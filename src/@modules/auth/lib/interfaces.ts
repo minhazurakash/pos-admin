@@ -161,6 +161,8 @@ export interface ISession {
     id: number;
     fullName: string;
     email: string;
+    companyId?: string;
+    userBranchIds?: string[];
     roles: string[];
   };
   expires: Date;

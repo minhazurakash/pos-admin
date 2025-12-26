@@ -63,6 +63,7 @@ export const currencyData = $$.convertObjectToArray(ENUM_CURRENCY);
 
 export const ENUM_USER_ROLES = {
   SUPER_ADMIN: 'Super Admin',
+  COMPANY_MAIN_OWNER: 'Company Main Owner',
   ADMIN: 'admin',
   CUSTOMER: 'Customer',
   AGENT: 'Agent',
